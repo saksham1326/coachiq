@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoachIQ — Client Intelligence Dashboard</title>
+  <meta name="description" content="AI-powered client intelligence dashboard for health coaches. Analyze conversations and generate actionable insights." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header id="app-header">
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="8" fill="url(#logo-grad)" />
+            <path d="M8 14C8 10.686 10.686 8 14 8C17.314 8 20 10.686 20 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="14" cy="17" r="3" fill="white" opacity="0.9"/>
+            <defs><linearGradient id="logo-grad" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+          </svg>
+        </div>
+        <div>
+          <h1 class="logo-text">CoachIQ</h1>
+          <span class="logo-sub">Client Intelligence Engine</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="client-badge">
+          <div class="avatar">S</div>
+          <div>
+            <span class="client-name">Sample Client</span>
+            <span class="client-period">Week 1 · Day 1–8</span>
+          </div>
+        </div>
+        <button id="btn-analyze" class="btn-primary" onclick="runAnalysis()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h4l2-4 2 6 2-2h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Analyse Conversation
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="app-main">
+    <!-- Status Bar -->
+    <div id="analysis-status" class="status-bar hidden">
+      <div class="status-inner">
+        <div class="status-spinner"></div>
+        <span id="status-text">Analysing conversation...</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <nav id="tab-nav" class="tab-nav hidden">
+      <button class="tab active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+      <button class="tab" data-tab="metrics" onclick="switchTab('metrics')">Health Metrics</button>
+      <button class="tab" data-tab="insights" onclick="switchTab('insights')">Insights & Risks</button>
+      <button class="tab" data-tab="actions" onclick="switchTab('actions')">Actions</button>
+      <button class="tab" data-tab="evidence" onclick="switchTab('evidence')">Evidence</button>
+      <button class="tab" data-tab="conversation" onclick="switchTab('conversation')">Conversation</button>
+
+    </nav>
+
+    <!-- Tab Content -->
+    <div id="tab-content" class="tab-content">
+      <!-- Landing State -->
+      <div id="landing" class="landing-state">
+        <div class="landing-card">
+          <div class="landing-icon">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" stroke="url(#lgrad)" stroke-width="2" stroke-dasharray="4 4"/>
+              <path d="M20 32C20 25.373 25.373 20 32 20C38.627 20 44 25.373 44 32" stroke="url(#lgrad)" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="32" cy="38" r="5" fill="url(#lgrad)"/>
+              <defs><linearGradient id="lgrad" x1="0" y1="0" x2="64" y2="64"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
+            </svg>
+          </div>
+          <h2>Ready to Analyse</h2>
+          <p>Click <strong>"Analyse Conversation"</strong> to process the 8-day coaching conversation and generate structured client intelligence.</p>
+          <div class="landing-features">
+            <div class="feature-chip"><span class="chip-dot confirmed"></span> Confirmed Facts</div>
+            <div class="feature-chip"><span class="chip-dot reported"></span> Client-Reported</div>
+            <div class="feature-chip"><span class="chip-dot inferred"></span> AI Inference</div>
+            <div class="feature-chip"><span class="chip-dot missing"></span> Missing Data</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview Tab -->
+      <section id="tab-overview" class="tab-panel hidden">
+        <div class="section-header">
+          <h2>Weekly Client Summary</h2>
+          <div class="review-actions" id="review-overview">
+            <button class="btn-approve" onclick="handleReview('overview','approve')">✓ Approve</button>
+            <button class="btn-edit" onclick="handleReview('overview','edit')">✎ Edit</button>
+            <button class="btn-reject" onclick="handleReview('overview','reject')">✕ Reject</button>
+            <span class="review-status" id="review-status-overview"></span>
+          </div>
+        </div>
+        <div id="summary-content" class="summary-grid"></div>
+      </section>
+
+      <!-- Metrics Tab -->
+      <section id="tab-metrics" class="tab-panel hidden">
+        <div class="section-header">
+          <h2>Health Metrics Tracking</h2>
+          <div class="review-actions" id="review-metrics">
+            <button class="btn-approve" onclick="handleReview('metrics','approve')">✓ Approve</button>
+            <button class="btn-edit" onclick="handleReview('metrics','edit')">✎ Edit</button>
+            <button class="btn-reject" onclick="handleReview('metrics','reject')">✕ Reject</button>
+            <span class="review-status" id="review-status-metrics"></span>
+          </div>
+        </div>
+        <div id="metrics-content"></div>
+      </section>
+
+      <!-- Insights Tab -->
+      <section id="tab-insights" class="tab-panel hidden">
+        <div class="section-header">
+          <h2>Insights, Risks &amp; Barriers</h2>
+          <div class="review-actions" id="review-insights">
+            <button class="btn-approve" onclick="handleReview('insights','approve')">✓ Approve</button>
+            <button class="btn-edit" onclick="handleReview('insights','edit')">✎ Edit</button>
+            <button class="btn-reject" onclick="handleReview('insights','reject')">✕ Reject</button>
+            <span class="review-status" id="review-status-insights"></span>
+          </div>
+        </div>
+        <div id="insights-content"></div>
+      </section>
+
+      <!-- Actions Tab -->
+      <section id="tab-actions" class="tab-panel hidden">
+        <div class="section-header">
+          <h2>Pending Actions &amp; Recommendations</h2>
+          <div class="review-actions" id="review-actions">
+            <button class="btn-approve" onclick="handleReview('actions','approve')">✓ Approve</button>
+            <button class="btn-edit" onclick="handleReview('actions','edit')">✎ Edit</button>
+            <button class="btn-reject" onclick="handleReview('actions','reject')">✕ Reject</button>
+            <span class="review-status" id="review-status-actions"></span>
+          </div>
+        </div>
+        <div id="actions-content"></div>
+      </section>
+
+      <!-- Evidence Tab -->
+      <section id="tab-evidence" class="tab-panel hidden">
+        <div class="section-header">
+          <h2>Supporting Evidence</h2>
+        </div>
+        <div id="evidence-content"></div>
+      </section>
+
+      <!-- Conversation Tab -->
+      <section id="tab-conversation" class="tab-panel hidden">
+        <div class="section-header">
+          <h2>Original Conversation</h2>
+          <span class="badge">8 Days</span>
+        </div>
+        <div id="conversation-content"></div>
+      </section>
+
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="app-footer">
+    <div class="footer-inner">
+      <span>CoachIQ Prototype · Built for GenAI Assessment</span>
+      <span class="footer-badge">AI-Assisted Analysis · Human-in-the-Loop</span>
+    </div>
+  </footer>
+
+  <script src="conversation-data.js"></script>
+  <script src="analysis-engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
